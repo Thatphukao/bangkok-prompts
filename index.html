@@ -1,0 +1,362 @@
+<!--
+Author: That (Phukao) Prommolmard
+Date: Feb 3 2025
+Contact: thatphukao@gmail.com
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Interactive Rising Text Animation</title>
+  <style>
+    :root {
+      --header-height: 200px;
+      --side-margin: 80px;
+      --green-bg: #00FF00;
+    }
+    
+    @font-face {
+      font-family: 'ArletteTHA';
+      src: url('libs/Arlette THA.otf') format('opentype');
+    }
+
+    @font-face {
+      font-family: 'Graphik';
+      src: url('libs/GraphikThaiLoop-Regular.otf') format('opentype');
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+    
+    body {
+      background-color: var(--green-bg);
+      font-family: 'ArletteTHA', sans-serif;
+    }
+    
+    /* White header */
+    #header {
+      height: var(--header-height);
+      width: 100%;
+      background-color: white;
+      position: relative;
+      z-index: 1;
+    }
+    
+    /* Clipping container for rising text animation (matches header height) */
+    #animation-clip {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: var(--header-height);
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 2;
+    }
+    
+    /* Container for animated rising texts */
+    #animation-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+    
+    /* Gradient overlay with vertical fade */
+    #gradient-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: var(--header-height);
+      z-index: 3;
+      pointer-events: none;
+      background: linear-gradient(to bottom, white 0%, transparent 50%, white 100%);
+    }
+    
+    /* Content area between header and logo */
+    #content {
+      position: absolute;
+      top: -100px;
+      bottom: 50px;
+      left: 0;
+      right: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    
+    #prompt {
+      font-size: 50px;
+      margin-left: var(--side-margin);
+      color: black;
+    }
+    
+    /* Input container styling */
+    #input-container {
+      position: relative;
+      margin-left: var(--side-margin);
+    }
+    
+    #user-input {
+      font-size: 24px;
+      font-family: 'Graphik', sans-serif;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: black;
+      min-width: 80%;
+    }
+    
+    /* Hidden span used to measure text width */
+    #text-measure {
+      position: absolute;
+      top: 0;
+      left: 0;
+      visibility: hidden;
+      white-space: pre;
+      font-size: 24px;
+      font-family: 'Graphik', sans-serif;
+    }
+    
+    /* Trailing info that follows the caret */
+    #trailing-info {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      left: 0;
+      display: inline-flex;
+      align-items: center;
+      margin-left: 4px;
+    }
+    
+    /* The enter-cursor (icon and "ENTER") */
+    #enter-cursor {
+      display: none;
+      align-items: center;
+    }
+    
+    #enter-cursor img {
+      height: 16px;
+    }
+    
+    #enter-cursor span {
+      font-size: 14px;
+      margin-left: 4px;
+    }
+    
+    /* Character counter styling */
+    #char-counter {
+      font-size: 14px;
+      font-family: 'Graphik', sans-serif;
+      margin-left: 10px;
+      color: black;
+      transition: color 1s ease;
+    }
+    
+    /* Error state for character counter */
+    #char-counter.error {
+      color: red;
+    }
+    
+    /* Rising text animation styling */
+    .rising-text {
+      position: absolute;
+      width: 100%;
+      font-family: 'Graphik';
+      font-size: 50px;
+      white-space: nowrap;
+
+      /* CHANGE RISING ANIMATION TIMING HERE AND AT LINE 289 */
+      /* เปลี่ยนความเร็วคำได้ตรงนี้กับที่ line 289 นะครับ */
+
+      animation: rise 8s linear forwards;
+    }
+    
+    .rising-text .left {
+      position: absolute;
+      left: var(--side-margin);
+    }
+    
+    .rising-text .right {
+      position: absolute;
+      right: var(--side-margin);
+      transform: scaleX(-1);
+    }
+    
+    /* Keyframes for rising animation */
+    @keyframes rise {
+      0%   { top: 250px; }
+      25%  { top: 75px; }
+      75%  { top: 75px; }
+      100% { top: -175px; }
+    }
+    
+    /* Fixed logo container */
+    #logo-container {
+      position: fixed;
+      bottom: 80px;
+      left: var(--side-margin);
+      right: var(--side-margin);
+      text-align: center;
+      z-index: 2;
+    }
+  </style>
+</head>
+<body>
+  <!-- White header -->
+  <div id="header"></div>
+  
+  <!-- Clipping container for rising text animation -->
+  <div id="animation-clip">
+    <div id="animation-container"></div>
+  </div>
+  
+  <!-- Gradient overlay -->
+  <div id="gradient-overlay"></div>
+  
+  <!-- Content area (prompt and input) -->
+  <div id="content">
+
+    <!-- CHANGE PROMPT HERE -->
+    <!-- เขียน prompt ได้ตรงนี้เลยครับ-->
+
+    <div id="prompt">ถ้าเมืองหน้ามีอยู่จริง อยากให้...</div> 
+
+
+    <div id="input-container">
+      <input type="text" id="user-input" autocomplete="off" maxlength="100" />
+      <div id="trailing-info">
+        <div id="enter-cursor">
+          <img src="libs/Icon enter.svg" alt="Enter Icon">
+          <span>ENTER</span>
+        </div>
+        <span id="char-counter">(0/30)</span>
+      </div>
+      <span id="text-measure"></span>
+    </div>
+  </div>
+  
+  <!-- Fixed logo -->
+  <div id="logo-container">
+    <img src="libs/LOGO.svg" alt="Logo" style="max-width: 100%; height: auto;">
+  </div>
+  
+  <script>
+    /*********************
+     * JavaScript Section
+     *********************/
+    
+    // Use modern declarations and cache DOM elements.
+    const submittedTexts = [];
+    let currentIndex = 0;
+    const charLimit = 30;
+    
+    const animationContainer = document.getElementById('animation-container');
+    const userInput = document.getElementById('user-input');
+    const trailingInfo = document.getElementById('trailing-info');
+    const enterCursor = document.getElementById('enter-cursor');
+    const charCounter = document.getElementById('char-counter');
+    const textMeasure = document.getElementById('text-measure');
+    
+    /**
+     * Creates an animated rising text element.
+     * Two spans are created: one for normal text and one mirrored.
+     */
+    const createAnimation = text => {
+      const anim = document.createElement('div');
+      anim.className = 'rising-text';
+      
+      const leftSpan = document.createElement('span');
+      leftSpan.className = 'left';
+      leftSpan.textContent = text;
+      
+      const rightSpan = document.createElement('span');
+      rightSpan.className = 'right';
+      rightSpan.textContent = text;
+      
+      anim.append(leftSpan, rightSpan);
+      animationContainer.appendChild(anim);
+      
+      // Remove the element after the animation completes (8 seconds)
+      // CHANGE RISING ANIMATION TIMING HERE AND AT LINE 177 (change here x1000 e.g. 3s is 3000)
+      // เปลี่ยนความเร็วคำได้ตรงนี้กับที่ line 177 นะครับ ตรงนี้ต้อง x 1000 เช่น 3 วิ ก็ต้องใส่ 3000
+
+      setTimeout(() => anim.remove(), 8000);
+    };
+    
+    /**
+     * Updates the trailing info’s horizontal position by measuring the
+     * typed text width.
+     */
+    const updateCaretPosition = () => {
+      textMeasure.textContent = userInput.value;
+      trailingInfo.style.left = `${textMeasure.offsetWidth}px`;
+    };
+    
+    /**
+     * Updates the character counter display.
+     */
+    const updateCharCounter = () => {
+      const len = userInput.value.length;
+      charCounter.textContent = `(${len}/${charLimit})`;
+    };
+    
+    /**
+     * Handles input events:
+     * - Updates the caret position and character counter.
+     * - Toggles the visibility of the enter cursor.
+     */
+    const handleInput = () => {
+      updateCaretPosition();
+      updateCharCounter();
+      enterCursor.style.display = userInput.value.length > 0 ? "inline-flex" : "none";
+    };
+    
+    userInput.addEventListener('input', handleInput);
+    
+    /**
+     * On pressing Enter:
+     * - If the text exceeds the character limit, flash the counter red.
+     * - Otherwise, add the submitted text and clear the input.
+     */
+    userInput.addEventListener('keydown', event => {
+      if (event.key === 'Enter') {
+        const text = userInput.value.trim();
+        if (text.length > charLimit) {
+          // Flash red instantly then fade back to black
+          charCounter.style.transition = "none";
+          charCounter.classList.add("error");
+          setTimeout(() => {
+            charCounter.style.transition = "color 1s ease";
+            charCounter.classList.remove("error");
+          }, 20);
+          event.preventDefault();
+          return;
+        }
+        if (text !== "") {
+          submittedTexts.push(text);
+          currentIndex = submittedTexts.length - 1;
+          userInput.value = "";
+          handleInput();
+        }
+      }
+    });
+    
+    /**
+     * Every 5 seconds, if there is at least one submitted text,
+     * animate the text at currentIndex and advance the pointer.
+     */
+    setInterval(() => {
+      if (submittedTexts.length > 0) {
+        createAnimation(submittedTexts[currentIndex]);
+        currentIndex = (currentIndex + 1) % submittedTexts.length;
+      }
+    }, 5000);
+  </script>
+</body>
+</html>
