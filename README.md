@@ -8,6 +8,8 @@
 
 This project is an interactive HTML page that allows users to input text which is then animated as rising text. The animation appears over a white header with a gradient overlay, and each submitted text is displayed in two mirrored copies. The page is built using HTML, CSS, and JavaScript with modern coding practices such as CSS custom properties and ES6 syntax.
 
+[You can preview the website here](http://htmlpreview.github.io/?https://github.com/Thatphukao/bangkok-prompts/blob/main/index.html)
+
 ### Installation
 
 1. You can just download the whole thing. Make sure your files look like this:
@@ -21,22 +23,21 @@ This project is an interactive HTML page that allows users to input text which i
            ├── Icon enter.svg
            └── LOGO.svg
    ```
-
 2. Go to your web browser of choice and go to File, then open index.html file
 
 ## Usage
 
-Type in the text box (below the prompt). It will be displayed at the top of the screen
+Type in the text box (below the prompt). It will be displayed at the top of the screen.
 
 ## Customization
 
-- To change the rising animation speed, adjust the duration in the CSS `@keyframes rise` (and the corresponding comment that indicates where to change it) as well as the JavaScript timeout value (the comment at the relevant line in the script). For example, if you want a 3-second animation, replace `8000` (which represents 8 seconds) with `3000` (3 seconds) in the `setTimeout` call.
-- Modify the HTML comment `<!-- CHANGE PROMPT HERE -->` and the text below it to customize the prompt message displayed to users.
+- Modify the HTML comment `<!-- CHANGE PROMPT HERE -->` at line 224 and the text below it to customize the prompt message displayed to users.
 - CSS custom properties (found in the `:root` selector) allow you to easily change key aspects of the layout:
 
   - `--header-height`: Adjusts the height of the header and animation clipping area.
   - `--side-margin`: Controls the horizontal margins.
   - `--green-bg`: Changes the background color of the page.
+  - You can change the interval of the texts over at line 257. This is in seconds, so if you want the interval to be exactly 2.3542 seconds you can put in that number.
 
 ## License
 
