@@ -201,7 +201,6 @@ Contact: thatphukao@gmail.com
       right: var(--side-margin);
       text-align: center;
       z-index: 2;
-      cursor: pointer;
     }
   </style>
 </head>
@@ -391,46 +390,6 @@ Contact: thatphukao@gmail.com
         currentIndex = (currentIndex + 1) % submittedTexts.length;
       }
     }, interval * 1000);
-    
-    /*********************
-     * Sound Playback Section
-     *********************/
-    
-    // Define arrays of sound filenames for each folder.
-    const citySounds = ["bbc_industry--_07070200.mp3", "bbc_skyline---_07070183.mp3", "bbc_thai-buddh_07070182.mp3", "bbc_trains--st_07070199.mp3"];
-    const motorsSounds = ["07070193.mp3", "bbc_thai-buddh_07070182.mp3", "bbc_3rd-class-_07070194.mp3", "bbc_traffic--m_07070197.mp3", "bbc_trains--di_07070203.mp3", "bbc_trains--el_07070198.mp3"];
-    const peopleSounds = ["bbc_bangkok-ri_07070184.mp3", "bbc_coffee-sho_07070195.mp3", "bbc_kitchens--_07070205.mp3", "bbc_restaurant_07070186.mp3", "bbc_schools---_07070196.mp3"];
-    
-    // Function to pick a random sound from an array.
-    function getRandomSound(soundsArray) {
-      return soundsArray[Math.floor(Math.random() * soundsArray.length)];
-    }
-    
-    // Function to play a sound from a specified folder.
-    // When the sound ends, a new random sound from the same folder is played.
-    function playSound(folder, soundsArray) {
-      const audio = new Audio("libs/sounds/" + folder + "/" + getRandomSound(soundsArray));
-      audio.addEventListener("ended", () => {
-        playSound(folder, soundsArray);
-      });
-      audio.play().catch(error => {
-        console.error("Error playing sound from", folder, error);
-      });
-    }
-    
-    // Function to start all sounds.
-    function startAudio() {
-      playSound("city", citySounds);
-      playSound("motors", motorsSounds);
-      playSound("people", peopleSounds);
-      // Remove the click listener after starting audio to prevent restarting.
-      logoContainer.removeEventListener("click", startAudio);
-    }
-    
-    // Make the logo clickable to start the audio process.
-    const logoContainer = document.getElementById("logo-container");
-    logoContainer.addEventListener("click", startAudio);
-    
   </script>
 </body>
 </html>
