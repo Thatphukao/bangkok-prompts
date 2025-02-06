@@ -10,7 +10,7 @@ Contact: thatphukao@gmail.com
   <title>Beyond the Chaos Interactive Screen</title>
   <style>
     :root {
-      --header-height: 18.18vh;
+      --header-height: 36.36vh;
       --side-margin: 80px;
       --green-bg: #00FF00;
       --animation-length: 8s;
@@ -82,7 +82,7 @@ Contact: thatphukao@gmail.com
     /* Content area between header and logo */
     #content {
       position: absolute;
-      top: 0vh;
+      top: 10vh;
       bottom: 50px;
       left: 0;
       right: 0;
@@ -169,8 +169,8 @@ Contact: thatphukao@gmail.com
       position: absolute;
       width: 100%;
       font-family: 'Graphik';
-      font-size: 50px;
-      white-space: nowrap;
+      font-size: 70px;
+      white-space: normal;
       animation: rise var(--animation-length) linear forwards;
     }
     
@@ -183,14 +183,15 @@ Contact: thatphukao@gmail.com
       position: absolute;
       right: var(--side-margin);
       transform: scaleX(-1);
+      text-align-last: right;
     }
     
     /* Keyframes for rising animation */
     @keyframes rise {
-      0%   { top: 22vh; }
-      25%  { top: 6vh; }
-      75%  { top: 6vh; }
-      100% { top: -10vh; }
+      0%   { top: 44vh; }
+      25%  { top: 15vh; }
+      75%  { top: 15vh; }
+      100% { top: -20vh; }
     }
     
     /* Fixed logo container (made clickable) */
