@@ -82,7 +82,7 @@ Contact: thatphukao@gmail.com
     /* Content area between header and logo */
     #content {
       position: absolute;
-      top: 10vh;
+      top: 17vh;
       bottom: 50px;
       left: 0;
       right: 0;
@@ -92,15 +92,19 @@ Contact: thatphukao@gmail.com
     }
     
     #prompt {
-      font-size: 50px;
-      margin-left: var(--side-margin);
-      color: black;
+      width: 30%;
+      margin-left: auto;
+      margin-right: auto;
     }
     
-    /* Input container styling */
+    /* Input container styling – centered using flex */
     #input-container {
       position: relative;
-      margin-left: var(--side-margin);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      /* Optionally, you may set a fixed width or use 100% */
+      width: 100%;
     }
     
     #user-input {
@@ -111,6 +115,7 @@ Contact: thatphukao@gmail.com
       outline: none;
       color: black;
       min-width: 80%;
+      text-align: center;  /* Center the text inside the input */
     }
     
     /* Hidden span used to measure text width */
@@ -129,16 +134,15 @@ Contact: thatphukao@gmail.com
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      left: 0;
-      display: inline-flex;
-      align-items: center;
-      margin-left: 4px;
+      /* The left position is set dynamically by JS */
     }
     
     /* The enter-cursor (icon and "ENTER") */
     #enter-cursor {
       display: none;
       align-items: center;
+      position: relative;
+      top: 4px;
     }
     
     #enter-cursor img {
@@ -183,6 +187,7 @@ Contact: thatphukao@gmail.com
       position: absolute;
       right: var(--side-margin);
       transform: scaleX(-1);
+      /* Use text-align-last to right-align the wrapped text after flip */
       text-align-last: right;
     }
     
@@ -202,6 +207,7 @@ Contact: thatphukao@gmail.com
       right: var(--side-margin);
       text-align: center;
       z-index: 2;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -221,7 +227,9 @@ Contact: thatphukao@gmail.com
   <div id="content">
     <!-- CHANGE PROMPT HERE -->
     <!-- เขียน prompt ได้ตรงนี้เลยครับ-->
-    <div id="prompt">ถ้าเมืองหน้ามีอยู่จริง อยากให้...</div> 
+    <div id="prompt">
+      <img src="libs/prompt.svg" alt="prompt">
+    </div> 
     <div id="input-container">
       <input type="text" id="user-input" autocomplete="off" maxlength="100" />
       <div id="trailing-info">
@@ -259,6 +267,7 @@ Contact: thatphukao@gmail.com
     const enterCursor = document.getElementById('enter-cursor');
     const charCounter = document.getElementById('char-counter');
     const textMeasure = document.getElementById('text-measure');
+    const inputContainer = document.getElementById('input-container');
     
     /**
      * Creates an animated rising text element.
@@ -283,10 +292,14 @@ Contact: thatphukao@gmail.com
     
     /**
      * Updates the trailing info’s horizontal position by measuring the typed text width.
+     * For a centered input, the caret is computed relative to the container center.
      */
     const updateCaretPosition = () => {
       textMeasure.textContent = userInput.value;
-      trailingInfo.style.left = `${textMeasure.offsetWidth + 5}px`;
+      const containerWidth = inputContainer.clientWidth;
+      // The caret should be placed at the center plus half the measured text width plus a small offset.
+      const caretOffset = (textMeasure.offsetWidth / 2) + 5;
+      trailingInfo.style.left = (containerWidth / 2 + caretOffset) + "px";
     };
     
     /**
@@ -298,7 +311,6 @@ Contact: thatphukao@gmail.com
     };
     
     // Manually specify your list of swear words here.
-    // Add your Thai words to this array.
     const swearWords = [
       "กระดอ", "กระทิง", "กระสัน", "กวนตีน", "กวนส้นตีน", "กินขี้ปี้เยี่ยว",
       "กู", "ขายตัว", "ขึ้แตก", "ควย", "ควาย", "จรวย", "จัญไร",
@@ -321,14 +333,14 @@ Contact: thatphukao@gmail.com
       "ตอแหล", "ปากดี", "ฟาย", "มรึง", "รากเลือด", "รากแตก", "รูทวาร", 
       "ลูกตะกั่ว", "ลูกปืน", "หน้าด้าน", "หน้าทน", "หน้าหนา", "หางจุกตูด", "หิวแสง", 
       "อีปลวก", "อีปลาวาฬ", "อีปลาเงือก", "อีฟันหมาบ้า", "อ้วกแตก", "ฮากแตก", 
-      "เจี๊ยว", "เซี่ยน", "เลือดกลบปาก", "เศษเดน", "เหลือเดน", "เอ็ง", "แสกหน้า", "ไอ้กร๊วก"];
+      "เจี๊ยว", "เซี่ยน", "เลือดกลบปาก", "เศษเดน", "เหลือเดน", "เอ็ง", "แสกหน้า", "ไอ้กร๊วก"
+    ];
     
     /**
      * Checks if the input text contains any swear words.
      * Returns true if any swear word is found.
      */
     function containsSwearWord(input) {
-      // Simply check if any word in the swearWords array is included in the input.
       return swearWords.some(word => input.includes(word));
     }
     
@@ -341,9 +353,7 @@ Contact: thatphukao@gmail.com
     const handleInput = () => {
       updateCaretPosition();
       updateCharCounter();
-      // Toggle the enter cursor visibility.
       enterCursor.style.display = userInput.value.length > 0 ? "inline-flex" : "none";
-      // Check if the input contains any swear words.
       if (containsSwearWord(userInput.value)) {
         charCounter.classList.add("error");
       } else {
@@ -355,14 +365,13 @@ Contact: thatphukao@gmail.com
     
     /**
      * On pressing Enter:
-     * - If the text exceeds the character limit, flash the counter red.
+     * - If the text exceeds the character limit or contains swear words, flash the counter red.
      * - Otherwise, add the submitted text and clear the input.
      */
     userInput.addEventListener('keydown', event => {
       if (event.key === 'Enter') {
         const text = userInput.value.trim();
-        if (text.length > charLimit || containsSwearWord(userInput.value) ) {
-          // Flash red instantly then fade back to black
+        if (text.length > charLimit || containsSwearWord(userInput.value)) {
           charCounter.style.transition = "none";
           charCounter.classList.add("error");
           setTimeout(() => {
@@ -391,6 +400,7 @@ Contact: thatphukao@gmail.com
         currentIndex = (currentIndex + 1) % submittedTexts.length;
       }
     }, interval * 1000);
+    
   </script>
 </body>
 </html>
