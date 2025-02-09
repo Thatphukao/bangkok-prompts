@@ -20,12 +20,12 @@ Contact: thatphukao@gmail.com
       font-family: 'ArletteTHA';
       src: url('libs/Arlette THA.otf') format('opentype');
     }
-
+    
     @font-face {
       font-family: 'Graphik';
       src: url('libs/GraphikThaiLoop-Regular.otf') format('opentype');
     }
-
+    
     html, body {
       margin: 0;
       padding: 0;
@@ -103,7 +103,6 @@ Contact: thatphukao@gmail.com
       display: flex;
       justify-content: center;
       align-items: center;
-      /* Optionally, you may set a fixed width or use 100% */
       width: 100%;
     }
     
@@ -142,7 +141,7 @@ Contact: thatphukao@gmail.com
       display: none;
       align-items: center;
       position: relative;
-      top: 4px;
+      top: 4px;  /* Adjust vertical offset as needed */
     }
     
     #enter-cursor img {
@@ -199,7 +198,7 @@ Contact: thatphukao@gmail.com
       100% { top: -20vh; }
     }
     
-    /* Fixed logo container (made clickable) */
+    /* Fixed logo container (click to download user inputs) */
     #logo-container {
       position: fixed;
       bottom: 80px;
@@ -243,7 +242,7 @@ Contact: thatphukao@gmail.com
     </div>
   </div>
   
-  <!-- Fixed logo container (click to start sounds) -->
+  <!-- Fixed logo container (click to download user inputs) -->
   <div id="logo-container">
     <img src="libs/LOGO.svg" alt="Logo" style="max-width: 100%; height: auto;">
   </div>
@@ -253,7 +252,7 @@ Contact: thatphukao@gmail.com
      * JavaScript Section
      *********************/
     
-    // Use modern declarations and cache DOM elements.
+    // Array to store user submissions.
     const submittedTexts = [];
     let currentIndex = 0;
     const charLimit = 24;
@@ -261,6 +260,7 @@ Contact: thatphukao@gmail.com
     // CHANGE INTERVAL TIMING HERE
     const interval = 5; // in seconds
     
+    // Cache DOM elements.
     const animationContainer = document.getElementById('animation-container');
     const userInput = document.getElementById('user-input');
     const trailingInfo = document.getElementById('trailing-info');
@@ -297,7 +297,7 @@ Contact: thatphukao@gmail.com
     const updateCaretPosition = () => {
       textMeasure.textContent = userInput.value;
       const containerWidth = inputContainer.clientWidth;
-      // The caret should be placed at the center plus half the measured text width plus a small offset.
+      // Place the trailing info at the center plus half the measured text width plus a small offset.
       const caretOffset = (textMeasure.offsetWidth / 2) + 5;
       trailingInfo.style.left = (containerWidth / 2 + caretOffset) + "px";
     };
@@ -310,7 +310,7 @@ Contact: thatphukao@gmail.com
       charCounter.textContent = `(${len}/${charLimit})`;
     };
     
-    // Manually specify your list of swear words here.
+    // Manually specify your list of swear words.
     const swearWords = [
       "กระดอ", "กระทิง", "กระสัน", "กวนตีน", "กวนส้นตีน", "กินขี้ปี้เยี่ยว",
       "กู", "ขายตัว", "ขึ้แตก", "ควย", "ควาย", "จรวย", "จัญไร",
@@ -400,6 +400,27 @@ Contact: thatphukao@gmail.com
         currentIndex = (currentIndex + 1) % submittedTexts.length;
       }
     }, interval * 1000);
+    
+    /*********************
+     * File Download Section
+     *********************/
+    
+    function downloadSubmittedTexts() {
+      const textContent = submittedTexts.join('\n');
+      const blob = new Blob([textContent], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'prompt_answers.txt';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+    
+    // When the user clicks the logo, trigger the download.
+    const logoContainer = document.getElementById("logo-container");
+    logoContainer.addEventListener("click", downloadSubmittedTexts);
     
   </script>
 </body>

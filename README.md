@@ -29,7 +29,7 @@ This project is an interactive HTML page that allows users to input text which i
 
 Type in the text box (below the prompt). It will be displayed at the top of the screen.
 
-To start the sound, click on "Beyond the Chaos" logo at the bottom.
+Click on the logo to download the prompt answers for a log of what people say (will refresh with browser refresh!)
 
 ## Customization
 
